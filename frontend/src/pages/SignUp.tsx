@@ -6,10 +6,22 @@ import Wrapper from "../components/Wrapper";
 import Label from "../components/Label";
 import { useState } from "react";
 
-const SignUp = () => {
+const SignUp: React.FC = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm<dataTypes>();
     const navigate = useNavigate();
     const [show, setShow] = useState<boolean>(false);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+
+    const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setImagePreview(imageUrl);
+        } else {
+            setImagePreview(null)
+        }
+    }
 
     const onSubmit = (data: dataTypes) => {
         console.log(data);
@@ -48,7 +60,9 @@ const SignUp = () => {
 
                     <Wrapper>
                         <Label text="Image" />
-                        <input type="file" {...register('image')} className="rounded-sm focus:outline-none" />
+                        <input type="file" {...register('image')} className="rounded-sm focus:outline-none" onChange={handleImagePreview}
+                        />
+                        {imagePreview && <img src={imagePreview} className="h-32 w-32 rounded-full"/>}
                     </Wrapper>
 
                     <button type="submit" className="bg-blue-500 text-white p-2 rounded">Sign Up</button>
